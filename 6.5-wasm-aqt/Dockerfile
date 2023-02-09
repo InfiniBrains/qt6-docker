@@ -1,19 +1,19 @@
-# Image: stateoftheartio/qt6:6.4-wasm-aqt
+# Image: infinibrains/qt6:6.5-wasm-aqt
 
 FROM ubuntu:latest
 MAINTAINER State Of The Art <docker@state-of-the-art.io> (@stateoftheartio)
 
 # PIP requirement like "aqtinstall==2.0.6" or url with egg file
-ARG AQT_VERSION="aqtinstall==3.0.1"
+#ARG AQT_VERSION="aqtinstall==3.1.0"
 
-ARG QT_VERSION="6.5.0-beta2"
+ARG QT_VERSION="6.5.0"
 ARG QT_PATH=/opt/Qt
 
 ARG SDK_PATH=/opt/emsdk
 ARG SDK_VERSION=3.1.25
-ARG SDK_SHA256=a2609fd97580e4e332acbf49b6cc363714982f06cb6970d54c9789df8e91381c
 
-ARG ADDITIONAL_PACKAGES="sudo git openssh-client ca-certificates curl python3 locales"
+
+ARG ADDITIONAL_PACKAGES="sudo git openssh-client ca-certificates curl python3 locales rsync"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NONINTERACTIVE_SEEN=true \
@@ -22,6 +22,12 @@ ENV DEBIAN_FRONTEND=noninteractive \
     EMSDK=${SDK_PATH} \
     EMSDK_NODE=${SDK_PATH}/node/14.18.2_64bit/bin/node \
     PATH=$PATH:${QT_PATH}/Tools/CMake/bin:${QT_PATH}/Tools/Ninja:${QT_PATH}/${QT_VERSION}/wasm_32/bin:${SDK_PATH}/upstream/bin:${SDK_PATH}/upstream/emscripten:${SDK_PATH}/node/14.18.2_64bit/bin:${SDK_PATH}
+
+RUN apt update
+
+RUN apt install -y git openssh-client ca-certificates curl python3 locales rsync curl python-is-python3 python3-pip libglib2.0-0
+
+RUN pip3 install --no-cache-dir "c"
 
 COPY get_emsdk.sh get_qt.sh install_packages.sh /tmp/
 
@@ -43,3 +49,5 @@ RUN groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=
 USER user
 WORKDIR /home/user
 ENV HOME /home/user
+
+RUN ls /opt/emsdk

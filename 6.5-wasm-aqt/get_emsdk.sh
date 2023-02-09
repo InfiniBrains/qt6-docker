@@ -1,10 +1,7 @@
-#!/bin/sh -xe
+#!/usr/bin/env bash
 # Script to get emscripten sdk
 
-[ "$SDK_VERSION" ] || SDK_VERSION=2.0.30
-[ "$SDK_URL" ]    || SDK_URL="https://github.com/emscripten-core/emsdk/archive/refs/tags/$SDK_VERSION.tar.gz"
-[ "$SDK_SHA256" ] || SDK_SHA256=69050d76c8907a58f99b08831e8cb7a4fba857efec6037d5e59df4b73111ba36
-
+[ "$SDK_URL" ]    || SDK_URL="https://github.com/emscripten-core/emsdk/archive/refs/tags/3.1.31.tar.gz"
 [ "$SDK_PATH" ] || SDK_PATH=/opt/emsdk
 
 root_dir=$PWD
@@ -25,12 +22,12 @@ echo
 
 apt install -y curl python-is-python3
 
-#echo "$SDK_SHA256 -" > sum.txt && curl -fLs "$SDK_URL" | tee /tmp/emsdk.tar.gz | sha256sum -c sum.txt
-mkdir -p "$SDK_PATH"
-tar --strip-components 1 -C "$SDK_PATH" -xf /tmp/emsdk.tar.gz
+echo curl -fLs "$SDK_URL" | tee /tmp/emsdk.tar.gz
+mkdir -p /opt/emsdk
+tar --strip-components 1 -C /opt/emsdk -xf /tmp/emsdk.tar.gz
 rm -f /tmp/emsdk.tar.gz
-emsdk install "$SDK_VERSION"
-emsdk activate "$SDK_VERSION"
+/opt/emsdk/emsdk install 3.1.25
+/opt/emsdk/emsdk activate 3.1.25 --permanent
 
 # Make sure node tool exist
 ls "$EMSDK_NODE"
